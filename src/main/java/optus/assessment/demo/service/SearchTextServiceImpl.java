@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -15,6 +14,7 @@ import java.util.*;
 @Service
 public class SearchTextServiceImpl implements SearchTextService {
 
+    // store sample.txt into a resource file
     ClassPathResource resourceFile = new ClassPathResource("sample.txt");
 
     File file;
@@ -38,7 +38,7 @@ public class SearchTextServiceImpl implements SearchTextService {
 
         List<String> searchTexts = searchText.getSearchText();
 
-        for (String text : searchTexts) {
+        for (String text : searchTexts) { // loop through each text that needs to search
 
             text = text.toUpperCase();
 
@@ -46,9 +46,9 @@ public class SearchTextServiceImpl implements SearchTextService {
 
             int count = 0;
 
-            while (scanner.hasNext()) {
+            while (scanner.hasNext()) { // loop through the whole sample text to compare and count
 
-                // remove commas and dots before comparing
+                // read text, remove commas and dots before comparing
                 String nextText = scanner.next().replace(",", "").replace(".", "").toUpperCase();
 
                 if (nextText.equals(text)) {
@@ -60,6 +60,7 @@ public class SearchTextServiceImpl implements SearchTextService {
             // first letter uppercase
             text = text.substring(0, 1) + text.substring(1).toLowerCase();
 
+            // put pair of searchText : count into temporary list
             tempCounts.put(text, count);
 
             scanner.close();

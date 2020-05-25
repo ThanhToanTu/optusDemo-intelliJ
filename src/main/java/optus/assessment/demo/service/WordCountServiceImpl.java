@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 @Service
 public class WordCountServiceImpl implements WordCountService {
 
+    // store sample.txt into a resource file
     ClassPathResource resourceFile = new ClassPathResource("sample.txt");
 
     Map<String, Integer> wordCountMap;
@@ -24,6 +25,7 @@ public class WordCountServiceImpl implements WordCountService {
     @PostConstruct
     public void searchWordsOccurence() {
 
+        // map of pairs of word : count
         wordCountMap = new HashMap<String, Integer>();
 
         BufferedReader reader = null;
@@ -34,10 +36,12 @@ public class WordCountServiceImpl implements WordCountService {
 
             String currentLine = reader.readLine();
 
+            // loop through every line of sample text
             while(currentLine != null) {
 
                 String[] words = currentLine.toUpperCase().split(" ");
 
+                // loop through every word in the line, compare and count, put in the map
                 for (String word : words) {
 
                     word = word.replace(",", "").replace(".", "");
@@ -51,6 +55,7 @@ public class WordCountServiceImpl implements WordCountService {
 
                 }
 
+                // next line
                 currentLine = reader.readLine();
 
             }
@@ -73,20 +78,20 @@ public class WordCountServiceImpl implements WordCountService {
     @Override
     public String top(@PathVariable int num) {
 
-        // use entrySet to sort in descending order, collect top sets into LinkedHashMap
+        // use entrySet and Stream API to sort in descending order, collect top sets into LinkedHashMap
         sortedWordCountMap = wordCountMap.entrySet()
                 .stream()
-                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
-                .limit(num)
+                .sorted(Map.Entry.<String, Integer>comparingByValue().reversed()) // sort by value, descending
+                .limit(num) // limit/take the top set of "num" (5, 10, 20, 30)
                 .collect(Collectors.toMap(
                         Map.Entry::getKey,
                         Map.Entry::getValue,
-                        (oldValue, newValue) -> oldValue, LinkedHashMap::new));
+                        (oldValue, newValue) -> oldValue, LinkedHashMap::new)); // apply to a new LinkedHashMap
 
         // return a String, formatted like scv
         return sortedWordCountMap.keySet().stream()
-                .map(key -> key + "|" + sortedWordCountMap.get(key))
-                .collect(Collectors.joining("\n"));
+                .map(key -> key + "|" + sortedWordCountMap.get(key)) // format each line = "key | value"
+                .collect(Collectors.joining("\n")); // join and separate them by \n new line
 
     }
 

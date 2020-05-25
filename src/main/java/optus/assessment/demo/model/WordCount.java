@@ -8,7 +8,7 @@ public class WordCount {
     private Map<String, Integer> wordCounts = new HashMap<String, Integer>();
 
     public WordCount() {
-
+        // default constructor
     }
 
     public WordCount(Map<String, Integer> wordCounts) {
